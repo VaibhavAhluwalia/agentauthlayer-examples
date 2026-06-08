@@ -4,122 +4,93 @@ A clean examples repo for learning `agentauthlayer` step by step.
 
 ## Start here
 
-If you are trying this library for the first time, follow this order:
+If you are new to the library, read:
 
-1. set up the repo
-2. start Agent Auth locally
-3. create the first admin password
-4. create a project
-5. sync the getting-started example agent
-6. verify the agent and tool in the UI
-7. then run the local LangGraph example
+- [`HOW_AGENTAUTH_WORKS.md`](./HOW_AGENTAUTH_WORKS.md)
 
----
+That file explains:
+- what the token does
+- what the agent identity is
+- why there are multiple decorators
+- what sync really does
+- how runtime binding works
 
-## Repo structure
+## Token-first usage
 
-```text
-agentauthlayer-examples/
-  examples/
-    getting_started/
-      simple_agent.py
-    workflows/
-      math_agent.py
-  README.md
-  requirements.txt
-```
+After creating a project in the Agent Auth UI, you can create a project token from:
+- **Project Settings**
+- **Tokens**
+- or the CLI with `agentauth token create`
 
-### Start with
-- `examples/getting_started/simple_agent.py`
-
-That file is the simplest first example.
-
----
-
-## What the getting-started example shows
-
-The getting-started example demonstrates:
-- one registered tool
-- one registered agent
-- one small LangGraph workflow
-- one sync command to make the tool and agent appear in the UI
-
----
-
-## 1. Setup the repo
+Then either export it for code:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+export AGENT_AUTH_TOKEN=YOUR_PROJECT_TOKEN
+export AGENT_AUTH_URL=http://127.0.0.1:8002
 ```
 
----
-
-## 2. Start Agent Auth locally
+or store it for SDK + CLI use:
 
 ```bash
-agentauth up --host 0.0.0.0 --port 8002
+agentauth login --base-url http://127.0.0.1:8002 --token YOUR_PROJECT_TOKEN --email admin@agentauth.dev
 ```
 
-Then open:
+## Recommended quickstart
 
-```text
-http://127.0.0.1:8002
-```
+1. Start the local server
+2. Log in
+3. Create a project
+4. Create a project token
+5. Sync your code-defined tools/agents
+6. Run the example locally
+7. Verify the result in the UI
 
-If this is your first time:
-- create the first super admin password
-- log in
-- create a project named `agent-examples`
-
----
-
-## 3. Optional CLI project setup
-
-You can also use the CLI for project setup:
+## Start the local server
 
 ```bash
-agentauth project list
-agentauth project create --project-id agent-examples --name "Agent Examples"
+agentauth up --host 0.0.0.0 --port 8002 --wait 20
 ```
 
----
+## Sync your example
 
-## 4. Sync the getting-started example first
+If your local repo currently exposes the top-level module:
 
 ```bash
-agentauth login --base-url http://127.0.0.1:8002
+agentauth sync --module simple_agent --project agent-examples
+```
+
+If you later restore the packaged module structure, you may use:
+
+```bash
 agentauth sync --module examples.getting_started.simple_agent --project agent-examples
 ```
 
-After sync, the UI should show:
-- agent: `basic-math-agent`
-- tool: `math.compute`
+## Runtime identity and policy demo
 
-This is the first thing to verify.
+This repo demonstrates both:
+- a happy path where runtime identity, project scope, and policy align
+- a mismatch path where project scope binding is denied
 
----
-
-## 5. Then run the local example
+### Happy path
 
 ```bash
-python examples/getting_started/simple_agent.py
+./.venv/bin/python simple_agent.py
 ```
 
-Expected result:
-- the LangGraph workflow runs one node
-- that node calls the math tool
-- the script prints the final result
+### Mismatch path
 
----
-
-## Workflow example
-
-A more involved math example is kept separately in:
-
-```text
-examples/workflows/math_agent.py
+```bash
+./.venv/bin/python examples/getting_started/project_scope_mismatch_demo.py
 ```
 
-That keeps the first-step developer experience simple, while still leaving room for richer examples later.
+## Token lifecycle
+
+Project tokens are shown once when created.
+
+That means:
+- copy them immediately
+- store them safely
+- if you lose them, create a new token
+- revoke the old token if needed
+
+Old token values should not be shown again later.
