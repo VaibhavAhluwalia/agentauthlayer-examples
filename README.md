@@ -22,13 +22,13 @@ Use this repo if you want to:
 
 If you are completely new, follow this order:
 
-1. **Install and start the local control plane**
-2. **Log in and create your first project**
-3. **Create a project token**
-4. **Run the first client/token example**
-5. **Register and sync tools**
-6. **Run an integration example**
-7. **Read the mental model guide**
+1. install and start the local control plane
+2. log in and create your first project
+3. create a project token
+4. run the first client/token example
+5. register and sync tools
+6. run an integration example
+7. read the mental model guide
 
 ---
 
@@ -79,11 +79,11 @@ export AGENT_AUTH_TOKEN=YOUR_PROJECT_TOKEN
 
 ---
 
-## Example ladder
+## Step-by-step examples
 
-The repo is organized to teach the library in stages.
+The repo is organized as a step-by-step path for learning the library.
 
-### Getting started
+### Step 1, connect with a token
 
 #### `examples/getting_started/01_client_with_token.py`
 Use the SDK client with a token.
@@ -93,6 +93,8 @@ You learn:
 - how to talk to the control plane
 - what a token is used for
 
+### Step 2, register a tool
+
 #### `examples/getting_started/02_register_tool.py`
 Register a tool from code.
 
@@ -101,7 +103,36 @@ You learn:
 - how sync discovers code-defined tools
 - what metadata Agent Auth needs
 
-### Integrations
+### Step 3, sync your agent
+
+#### `examples/getting_started/03_sync_agent.py`
+Use the sync flow to create or update code-defined state in the control plane.
+
+You learn:
+- how sync works
+- why sync should only update what changed
+- how Agent Auth keeps code and control-plane state aligned
+
+### Step 4, use token login in the CLI
+
+#### `examples/getting_started/04_token_login_cli_flow.py`
+See how token-based CLI login works in practice.
+
+You learn:
+- how to use a project token with the CLI
+- how stored credentials help SDK and CLI workflows
+
+### Step 5, rotate a project token
+
+#### `examples/getting_started/05_project_token_rotation.py`
+Learn the expected replace/revoke flow for one-time-reveal project tokens.
+
+You learn:
+- why tokens are shown once
+- how to replace a lost token
+- how to revoke old tokens safely
+
+### Step 6, run an integration example
 
 #### `examples/integrations/langgraph_math_agent.py`
 A LangGraph-style integration example.
@@ -110,14 +141,16 @@ You learn:
 - how Agent Auth fits alongside a runtime tool framework
 - how LangGraph tool definitions and Agent Auth decorators complement each other
 
-#### `examples/integrations/permission_denied_tool.py`
-A denied-path example.
+### Step 7, see a runtime binding mismatch
+
+#### `examples/getting_started/project_scope_mismatch_demo.py`
+This example shows a denied path where project scope does not match execution context.
 
 You learn:
-- what a policy failure looks like
-- how runtime authorization blocks disallowed actions
+- what a project-scope mismatch looks like
+- how runtime binding can deny execution early
 
-### Workflows
+### Step 8, explore a workflow example
 
 #### `examples/workflows/math_agent.py`
 A slightly larger example showing a more complete flow.
@@ -172,30 +205,9 @@ Old token values should not be shown again later.
 
 ---
 
-## Suggested next examples to add
-
-These are the highest-value follow-up examples for users:
-
-1. **`03_sync_agent.py`**
-   - show sync explicitly
-   - show create/update/unchanged behavior
-
-2. **`04_token_login_cli_flow.py`**
-   - show `agentauth login --token ...`
-   - show stored token flow
-
-3. **`05_project_token_rotation.py`**
-   - create replacement token
-   - revoke old token
-   - explain one-time reveal behavior
-
-Those three examples would make the repo much easier for new users.
-
----
-
 ## Keep going
 
 If you want the easiest path:
-1. run the getting-started examples first
+1. follow steps 1 through 5 first
 2. then read `HOW_AGENTAUTH_WORKS.md`
-3. then move into the integration/workflow examples
+3. then move into the integration and workflow examples
