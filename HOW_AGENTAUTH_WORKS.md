@@ -1,190 +1,143 @@
 # How Agent Auth Works
 
-This guide explains the mental model behind `agentauthlayer`.
+This guide explains the user-facing mental model behind `agentauthlayer`.
 
-If you were asking questions like:
-- What does the token actually do?
-- How does the library know which agent is running?
+It answers common questions like:
+- What is the token used for?
+- What does sync do?
 - Why are there multiple decorators?
-- What does sync really do?
-
-this file is the answer.
+- How does runtime authorization work?
 
 ---
 
-## 1. What Agent Auth is
+## 1. What Agent Auth does
 
-Agent Auth is a library-first authentication and authorization layer for agents and tools.
+Agent Auth helps you:
+- authenticate SDK and CLI calls
+- register tools and agents from code
+- sync those definitions to a control plane
+- enforce authorization rules at runtime
 
-It has three main parts:
-- the **SDK/library** you use in code
-- the **control plane** that stores agents, tools, projects, tokens, and policies
-- the **UI** where you can manage and verify what exists
-
-The source of truth starts in code, not in the UI.
+You define tools and agents in code, and Agent Auth helps manage and authorize them.
 
 ---
 
-## 2. What the token does
+## 2. What the token is used for
 
-A token is primarily used for **authentication** to the control plane.
+A token is mainly used to authenticate calls to the control plane.
 
-It answers:
-- who is calling Agent Auth?
-- is this caller valid?
-- what scopes/project context came with the token?
-
-Examples:
-- SDK calls
-- CLI calls
+That includes things like:
+- SDK requests
+- CLI requests
 - sync operations
-- project/token management operations
+- token and project management actions
+
+A token proves that the caller is valid.
 
 ### Important
-A token is not the entire runtime authorization story by itself.
-
-It authenticates the caller, but policy and execution context still decide whether a tool/action is actually allowed.
+A token alone is not the full runtime authorization story.
+Runtime authorization also depends on execution context and policy.
 
 ---
 
-## 3. What the agent identity is
+## 3. What sync does
 
-Agent Auth keeps track of an agent in the control plane using an `agent_id`.
+Sync sends your code-defined tools and agents to the control plane.
 
-At runtime, the code still needs to know which agent is active.
-That is why `ExecutionContext` exists.
+The intended behavior is:
+- create missing items
+- update changed items
+- skip unchanged items
 
-An execution context can carry:
-- `principal_id`
-- `principal_type`
-- `agent_id`
-- `project_id`
-- `role`
-- `scopes`
-
-That lets runtime authorization know:
-- which project is active
-- which agent is active
-- which scopes are active
+That means sync should not feel like duplicate recreation every time.
 
 ---
 
 ## 4. Why there are multiple decorators
 
-This is one of the biggest confusion points.
+Different decorators do different jobs.
 
 ### LangGraph `@tool`
-This defines the runtime tool for LangGraph.
+Defines the runtime tool for LangGraph.
 
 ### `@register_tool(...)`
-This tells Agent Auth that the function should be part of the synced tool catalog in the control plane.
+Marks the tool so it can be discovered and synced into Agent Auth.
 
 ### `@require_permission(...)`
-This performs runtime authorization checks before the tool executes.
+Checks authorization before the tool runs.
 
-So the decorators have different jobs:
-- LangGraph defines the tool runtime
-- Agent Auth registers and authorizes it
-
-They are complementary, not replacements for each other.
+So the runtime tool decorator and the Agent Auth decorators are complementary.
 
 ---
 
-## 5. What sync does
+## 5. What runtime authorization uses
 
-Sync is how code-defined tools and agents are sent to the control plane.
+Runtime authorization uses more than a token.
+It also uses execution context.
 
-The intended behavior is:
-- create if missing
-- update if changed
-- skip if unchanged
-
-Sync should not act like a blind duplicate creation step.
-
-### Tool sync
-Tool sync compares current code-defined tool metadata against what is already known and only pushes what changed.
-
-### Agent sync
-Agent sync compares the current code-defined agent state against the existing control-plane state and only updates changed fields.
-
----
-
-## 6. What runtime binding means
-
-Runtime binding is the execution-time link between:
-- token context
-- project context
+Execution context can carry things like:
 - agent identity
-- tool/action authorization
+- project identity
+- scopes
+- role
 
-A strong runtime check should know:
-- this token/project scope belongs to project X
-- this execution context claims project X
-- this agent identity is the expected one
-- this tool/action is allowed by policy
-
-If those do not match, execution should be denied.
-
-### Example of mismatch
-If execution context says:
-- `project_id = agent-examples`
-
-but scopes say:
-- `project:another-project`
-
-runtime authorization should deny it.
-
-That mismatch path is now demonstrated in the examples repo too.
+That lets Agent Auth check whether the current action should be allowed.
 
 ---
 
-## 7. Token lifecycle behavior
+## 6. What project scope means
 
-Project tokens are shown **once** when created.
+Project-aware flows can carry project scope information.
+
+That allows runtime checks to reject mismatches, for example when:
+- the execution context says one project
+- but the active scope says another project
+
+This helps keep authorization consistent.
+
+---
+
+## 7. Token lifecycle
+
+Project tokens are shown once when created.
 
 That means:
 - copy them immediately
 - store them safely
-- if you lose them, create a new one
-- revoke the old one if needed
+- if you lose one, create a new token
+- revoke the old token if needed
 
-The UI should not show old token values again later.
-
-That is intentional and safer.
+Old token values should not be shown again later.
 
 ---
 
 ## 8. Recommended user flow
 
-The simplest user flow is:
+A simple flow is:
 
 1. start the local server
 2. log in
 3. create a project
 4. create a project token
-5. sync your code-defined tools/agents
-6. run your local example
+5. sync your tools and agents
+6. run your example
 7. verify in the UI
 
 ---
 
-## 9. Summary
+## 9. Simple summary
 
 ### Token
-Used for control-plane authentication.
-
-### Policy
-Decides authorization.
-
-### ExecutionContext
-Tells runtime which agent/project/scopes are active.
+Authenticates the caller.
 
 ### Sync
-Moves code-defined tools and agents into the control plane.
+Moves code-defined state into the control plane.
+
+### Execution context
+Tells runtime which identity and project are active.
+
+### Policy
+Decides whether an action is allowed.
 
 ### UI
 Lets you manage and verify what exists.
-
----
-
-If you understand those five ideas, the library becomes much easier to reason about.
