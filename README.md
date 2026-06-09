@@ -171,8 +171,3 @@ Old token values should not be shown again later.
 
 ---
 
-## Notes
-
-This repo is for public/user-facing examples.
-
-Local-only personal notes and manual reference files should stay outside the pushed public examples flow.
