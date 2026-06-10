@@ -18,6 +18,10 @@ Use this repo if you want to:
 - use project-scoped tokens
 - understand runtime authorization with simple examples
 
+## Library links
+
+- PyPI: <https://pypi.org/project/agentauthlayer/>
+
 ## Start here
 
 If you are completely new, follow this order:
@@ -27,8 +31,12 @@ If you are completely new, follow this order:
 3. create a project token
 4. run the first client/token example
 5. register and sync tools
-6. run an integration example
-7. read the mental model guide
+6. understand sync behavior
+7. understand permission checks
+8. try token-based code usage
+9. try the CLI-only path
+10. run an integration example
+11. read the mental model guide
 
 ---
 
@@ -132,16 +140,55 @@ You learn:
 - how to replace a lost token
 - how to revoke old tokens safely
 
-### Step 6, run an integration example
+### Step 6, understand create-or-update sync
 
-#### `examples/integrations/langgraph_math_agent.py`
-A LangGraph-style integration example.
+#### `examples/getting_started/06_create_or_update_sync_demo.py`
+Learn how smart sync should behave when code-defined state already exists.
 
 You learn:
-- how Agent Auth fits alongside a runtime tool framework
-- how LangGraph tool definitions and Agent Auth decorators complement each other
+- why sync should create missing items
+- why sync should update only changed items
+- why unchanged items should be skipped
 
-### Step 7, see a runtime binding mismatch
+### Step 7, see a minimal permission example
+
+#### `examples/getting_started/07_require_permission_minimal.py`
+Understand runtime authorization in the smallest useful example.
+
+You learn:
+- how `@require_permission(...)` works
+- what an allowed path looks like
+- what a denied path looks like
+
+### Step 8, try the CLI-only flow
+
+#### `examples/getting_started/08_cli_only_flow.py`
+Follow the system from the CLI without needing a deeper integration first.
+
+You learn:
+- how to think about the system operationally
+- how login, project, token, and sync fit together
+
+### Step 9, understand sync no-change vs update behavior
+
+#### `examples/getting_started/09_sync_unchanged_vs_updated.py`
+A focused explanation of what smart sync should do on repeat runs.
+
+You learn:
+- first sync vs second sync behavior
+- unchanged vs updated code-defined state
+- why sync should be diff-based
+
+### Step 10, use a token directly in code
+
+#### `examples/getting_started/10_token_used_in_code.py`
+Use `AuthAPIClient(token=...)` directly from Python code.
+
+You learn:
+- how token-based SDK usage looks in real code
+- how to use environment variables cleanly
+
+### Step 11, see a runtime binding mismatch
 
 #### `examples/getting_started/project_scope_mismatch_demo.py`
 This example shows a denied path where project scope does not match execution context.
@@ -150,7 +197,16 @@ You learn:
 - what a project-scope mismatch looks like
 - how runtime binding can deny execution early
 
-### Step 8, explore a workflow example
+### Step 12, run an integration example
+
+#### `examples/integrations/12_langgraph_with_agentauth.py`
+A LangGraph-style integration example showing how LangGraph and Agent Auth decorators work together.
+
+You learn:
+- how runtime tool decorators and Agent Auth decorators complement each other
+- how to combine tool definition, registration, and permission checks
+
+### Step 13, explore a workflow example
 
 #### `examples/workflows/math_agent.py`
 A slightly larger example showing a more complete flow.
@@ -208,6 +264,6 @@ Old token values should not be shown again later.
 ## Keep going
 
 If you want the easiest path:
-1. follow steps 1 through 5 first
+1. follow steps 1 through 10 first
 2. then read `HOW_AGENTAUTH_WORKS.md`
 3. then move into the integration and workflow examples
