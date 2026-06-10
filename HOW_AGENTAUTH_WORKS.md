@@ -34,9 +34,27 @@ That includes things like:
 
 A token proves that the caller is valid.
 
+## What a token can carry
+
+A token can also carry basic authenticated context such as:
+- caller identity
+- scopes
+- project-scoped context
+- principal type
+
+This helps the system understand what the caller is allowed to do when talking to the control plane.
+
 ### Important
-A token alone is not the full runtime authorization story.
-Runtime authorization also depends on execution context and policy.
+A token is not the full runtime authorization story by itself.
+Runtime authorization can also depend on:
+- execution context
+- agent identity
+- policy evaluation
+
+So a good mental model is:
+- token authenticates the caller and carries access context
+- policy decides what is allowed
+- execution context helps identify which project and agent are active at runtime
 
 ---
 
@@ -128,7 +146,7 @@ A simple flow is:
 ## 9. Simple summary
 
 ### Token
-Authenticates the caller.
+Authenticates the caller and carries access context.
 
 ### Sync
 Moves code-defined state into the control plane.
