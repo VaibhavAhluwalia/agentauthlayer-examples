@@ -9,6 +9,58 @@ This repo is designed to help you get to a **first successful run quickly**, the
 - runtime authorization
 - project-aware execution
 
+## Library links
+
+- PyPI: <https://pypi.org/project/agentauthlayer/>
+
+## If you are confused, start here
+
+The easiest way to understand Agent Auth is to separate four different jobs:
+
+### Token
+Used to authenticate SDK and CLI calls to the control plane.
+
+A token is used for things like:
+- SDK requests
+- CLI requests
+- sync operations
+- project and token management calls
+
+### `register_tool(...)` and `register_agent(...)`
+Used to declare local code-defined metadata.
+
+These functions do **not** directly create backend state by themselves.
+They tell Agent Auth what tools and agents should be discovered when sync runs.
+
+### Sync
+Used to create or update the declared tools and agents in the control plane.
+
+Sync should:
+- create missing things
+- update changed things
+- skip unchanged things
+
+### Policy / runtime authorization
+Used to decide whether something is allowed to run.
+
+This is different from token authentication.
+It can depend on:
+- role
+- scopes
+- execution context
+- project context
+- runtime identity
+
+### Simple mental model
+- **Token** = who can call
+- **Register** = what should exist
+- **Sync** = make it exist or update it
+- **Policy** = what is allowed to run
+
+If you want direct example files for this:
+- `examples/getting_started/11_agent_fields_explained.py`
+- `examples/getting_started/12_token_vs_register_vs_sync.py`
+
 ## Who this is for
 
 Use this repo if you want to:
@@ -17,10 +69,6 @@ Use this repo if you want to:
 - sync agents and tools into the control plane
 - use project-scoped tokens
 - understand runtime authorization with simple examples
-
-## Library links
-
-- PyPI: <https://pypi.org/project/agentauthlayer/>
 
 ## Start here
 
@@ -232,25 +280,6 @@ You learn:
 
 #### `examples/workflows/math_agent.py`
 A slightly larger example showing a more complete flow.
-
----
-
-## What the key concepts mean
-
-### What the token does
-A token authenticates SDK and CLI calls to the control plane.
-
-### What `register_tool(...)` does
-It declares tool metadata locally in code so sync can discover it later.
-
-### What `register_agent(...)` does
-It declares agent metadata locally in code so sync can discover it later.
-
-### What sync does
-Sync creates missing items, updates changed items, and skips unchanged items when possible.
-
-### What runtime execution context does
-It provides project and agent context for runtime authorization.
 
 ---
 
