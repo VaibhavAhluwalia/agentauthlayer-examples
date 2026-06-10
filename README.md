@@ -35,8 +35,10 @@ If you are completely new, follow this order:
 7. understand permission checks
 8. try token-based code usage
 9. try the CLI-only path
-10. run an integration example
-11. read the mental model guide
+10. understand agent registration fields
+11. understand token vs register vs sync
+12. run an integration example
+13. read the mental model guide
 
 ---
 
@@ -188,7 +190,27 @@ You learn:
 - how token-based SDK usage looks in real code
 - how to use environment variables cleanly
 
-### Step 11, see a runtime binding mismatch
+### Step 11, understand agent registration fields
+
+#### `examples/getting_started/11_agent_fields_explained.py`
+Understand what agent fields mean when registering an agent in code.
+
+You learn:
+- `agent_id` is the stable machine identifier
+- `name` is the human-readable display name
+- what `role`, `scopes`, and `project_id` are for
+
+### Step 12, understand token vs register vs sync
+
+#### `examples/getting_started/12_token_vs_register_vs_sync.py`
+Understand the difference between token authentication, local registration, and sync.
+
+You learn:
+- token authenticates control-plane calls
+- register functions declare local code metadata
+- sync pushes that metadata into the control plane
+
+### Step 13, see a runtime binding mismatch
 
 #### `examples/getting_started/project_scope_mismatch_demo.py`
 This example shows a denied path where project scope does not match execution context.
@@ -197,7 +219,7 @@ You learn:
 - what a project-scope mismatch looks like
 - how runtime binding can deny execution early
 
-### Step 12, run an integration example
+### Step 14, run an integration example
 
 #### `examples/integrations/12_langgraph_with_agentauth.py`
 A LangGraph-style integration example showing how LangGraph and Agent Auth decorators work together.
@@ -206,10 +228,29 @@ You learn:
 - how runtime tool decorators and Agent Auth decorators complement each other
 - how to combine tool definition, registration, and permission checks
 
-### Step 13, explore a workflow example
+### Step 15, explore a workflow example
 
 #### `examples/workflows/math_agent.py`
 A slightly larger example showing a more complete flow.
+
+---
+
+## What the key concepts mean
+
+### What the token does
+A token authenticates SDK and CLI calls to the control plane.
+
+### What `register_tool(...)` does
+It declares tool metadata locally in code so sync can discover it later.
+
+### What `register_agent(...)` does
+It declares agent metadata locally in code so sync can discover it later.
+
+### What sync does
+Sync creates missing items, updates changed items, and skips unchanged items when possible.
+
+### What runtime execution context does
+It provides project and agent context for runtime authorization.
 
 ---
 
@@ -225,25 +266,6 @@ That guide explains:
 - why there are multiple decorators
 - what execution context means
 - how runtime authorization works at a safe public level
-
----
-
-## What each part does
-
-### Token
-Authenticates SDK and CLI calls to the control plane.
-
-### Sync
-Creates missing items, updates changed items, and skips unchanged items when possible.
-
-### `@register_tool(...)`
-Marks a tool so Agent Auth can discover and sync it.
-
-### `@require_permission(...)`
-Checks authorization before the tool runs.
-
-### Runtime execution context
-Provides project and agent context for runtime authorization.
 
 ---
 
@@ -264,6 +286,6 @@ Old token values should not be shown again later.
 ## Keep going
 
 If you want the easiest path:
-1. follow steps 1 through 10 first
+1. follow steps 1 through 12 first
 2. then read `HOW_AGENTAUTH_WORKS.md`
 3. then move into the integration and workflow examples
