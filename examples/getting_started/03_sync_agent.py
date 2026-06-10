@@ -1,3 +1,17 @@
+"""
+Step 3: Sync your agent.
+
+This file explains what should be synced from code into the control plane.
+Use it with:
+
+    agentauth sync --module examples.getting_started.03_sync_agent --project agent-examples
+
+Expected behavior:
+- first sync should create missing state
+- later syncs should update only changed state
+- unchanged state should be skipped
+"""
+
 from __future__ import annotations
 
 from agent_auth import register_agent, register_tool, require_permission
@@ -20,11 +34,12 @@ register_agent(
 
 
 if __name__ == "__main__":
+    print("Step 3, sync your agent")
     print(
         {
-            "message": "This module is meant to be synced with agentauth sync.",
-            "example": "agentauth sync --module examples.getting_started.03_sync_agent --project agent-examples",
+            "module": "examples.getting_started.03_sync_agent",
             "agent_id": "basic-research-agent",
             "tools": ["docs.read"],
+            "how_to_run": "agentauth sync --module examples.getting_started.03_sync_agent --project agent-examples",
         }
     )

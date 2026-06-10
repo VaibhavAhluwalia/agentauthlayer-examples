@@ -1,3 +1,15 @@
+"""
+Step 12: Run an integration example.
+
+This file shows how a framework runtime decorator and Agent Auth decorators can
+work together in the same tool definition.
+
+It demonstrates:
+- LangGraph-compatible tool definition
+- Agent Auth tool registration
+- Agent Auth runtime authorization
+"""
+
 from __future__ import annotations
 
 from agent_auth import ExecutionContext, register_agent, register_tool, require_permission
@@ -37,9 +49,13 @@ if __name__ == "__main__":
         scopes=["project:agent-examples"],
     )
 
+    print("Step 12, run an integration example")
     print(
         {
-            "message": "This example shows how LangGraph tool definitions and Agent Auth decorators work together.",
+            "what_this_shows": [
+                "how LangGraph tool definition and Agent Auth decorators can be combined",
+                "how runtime authorization still applies during integration",
+            ],
             "result": read_project_doc.invoke(
                 {
                     "name": "roadmap.md",

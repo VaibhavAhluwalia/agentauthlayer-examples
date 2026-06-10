@@ -1,8 +1,16 @@
+"""
+Step 8: Try the CLI-only flow.
+
+This file explains the system from an operational CLI-first point of view,
+without requiring a deeper integration first.
+"""
+
 from __future__ import annotations
 
+print("Step 8, try the CLI-only flow")
 print(
     {
-        "message": "This example shows the CLI-only path for learning Agent Auth before integrating it into application code.",
+        "message": "This path helps you understand login, project, token, and sync from the CLI before writing deeper application code.",
         "steps": [
             "Start the server: agentauth up --host 0.0.0.0 --port 8002 --wait 20",
             "Log in: agentauth login --base-url http://127.0.0.1:8002 --email admin@agentauth.dev --password 'YOUR_PASSWORD'",

@@ -1,3 +1,10 @@
+"""
+Step 10: Use a token directly in code.
+
+This file shows the simplest useful Python example where a project token is
+used directly with AuthAPIClient.
+"""
+
 from __future__ import annotations
 
 import os
@@ -16,9 +23,16 @@ if __name__ == "__main__":
 
     client = AuthAPIClient(base_url=base_url, token=token)
 
-    print({
-        "base_url": base_url,
-        "auth_source": "explicit_token",
-        "projects": client.list_projects(),
-        "tokens": client.list_tokens("system"),
-    })
+    print("Step 10, use a token directly in code")
+    print(
+        {
+            "base_url": base_url,
+            "auth_source": "explicit_token",
+            "what_this_shows": [
+                "how to construct AuthAPIClient with a token",
+                "how to read project-aware state from the control plane",
+            ],
+            "projects": client.list_projects(),
+            "tokens": client.list_tokens("system"),
+        }
+    )

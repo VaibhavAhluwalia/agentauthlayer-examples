@@ -1,17 +1,22 @@
+"""
+Step 6: Understand create-or-update sync.
+
+This file explains the expected behavior of smart sync when code-defined
+state already exists in the control plane.
+"""
+
 from __future__ import annotations
 
+print("Step 6, understand create-or-update sync")
 print(
     {
-        "message": "This example explains how smart sync should behave when your code-defined agent or tools already exist.",
-        "expected_sync_behavior": [
-            "Create missing tools or agents on first sync.",
-            "Update only changed fields on later syncs.",
-            "Skip unchanged tools and agents instead of recreating them.",
-        ],
-        "suggested_steps": [
+        "first_sync": "Create missing tools and agents.",
+        "second_sync": "Skip unchanged tools and agents instead of recreating them.",
+        "after_code_change": "Update only the fields or tool definitions that changed.",
+        "try_this": [
             "Run: agentauth sync --module examples.getting_started.03_sync_agent --project agent-examples",
-            "Run the same sync again and observe that unchanged items should not be recreated.",
-            "Then change a field like a description, role, or scope and sync again to observe an update-only path.",
+            "Run the same command again to observe the unchanged path.",
+            "Change a role, scope, or description, then sync again to observe an update-only path.",
         ],
     }
 )

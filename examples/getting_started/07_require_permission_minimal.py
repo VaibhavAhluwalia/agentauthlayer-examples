@@ -1,3 +1,11 @@
+"""
+Step 7: See a minimal permission example.
+
+This file shows the smallest useful runtime authorization example with:
+- one allowed execution context
+- one denied execution context
+"""
+
 from __future__ import annotations
 
 from agent_auth import ExecutionContext, require_permission
@@ -18,6 +26,7 @@ if __name__ == "__main__":
         scopes=["project:agent-examples"],
     )
 
+    print("Step 7, see a minimal permission example")
     print({"allowed_result": read_doc("overview.md", execution_context=allowed)})
 
     denied = ExecutionContext(
